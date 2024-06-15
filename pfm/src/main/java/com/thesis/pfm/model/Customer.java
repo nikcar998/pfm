@@ -8,10 +8,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class User {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int customerId;
     private String name;
     private String surname;
     private String email;
