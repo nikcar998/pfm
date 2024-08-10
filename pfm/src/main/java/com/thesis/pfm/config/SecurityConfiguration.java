@@ -11,25 +11,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
-    public SecurityConfiguration(CustomOAuth2UserService customOAuth2UserService,
-                                 CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler) {
-        this.customOAuth2UserService = customOAuth2UserService;
-        this.customOAuth2AuthenticationFailureHandler = customOAuth2AuthenticationFailureHandler;
-    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,9 +31,10 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/", "/login", "/register", "/api/auth/**", "/error", "/oauth2/authorization/google").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**"))
+                .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+
 }
