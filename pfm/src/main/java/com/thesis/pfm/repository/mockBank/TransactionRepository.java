@@ -3,6 +3,7 @@ package com.thesis.pfm.repository.mockBank;
 import com.thesis.pfm.model.mockBank.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,5 +31,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             "GROUP BY YEAR(t.dataEsecuzione), MONTH(t.dataEsecuzione)) as monthlySums")
     BigDecimal findAverageIncomeLastMonths(String username, LocalDate startDate);
 
-    List<Transaction> findByAccountCustomerUsername(String username);
+    @Query("SELECT t FROM Transaction t " +
+            "WHERE t.account.numeroContoCorrente = :accountCode " +
+            "AND YEAR(t.dataEsecuzione) = :year " +
+            "AND MONTH(t.dataEsecuzione) = :month")
+    List<Transaction> findByAccountAndMonth(@Param("iban") String accountCode,
+                                            @Param("year") int year,
+                                            @Param("month") int month);
 }

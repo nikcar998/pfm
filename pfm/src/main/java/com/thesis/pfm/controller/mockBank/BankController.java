@@ -67,4 +67,15 @@ public class BankController {
         return bankService.getCustomerBySessionId(sessionId);
     }
 
+    @GetMapping("/transactions/month")
+    public ResponseEntity<?> getTransactionsByMonth(@RequestHeader String sessionId,
+                                                    @RequestHeader String accountCode,
+                                                    @RequestParam int year,
+                                                    @RequestParam int month) {
+        Optional<BankCustomer> customer = isAuthorized(sessionId);
+        if (customer.isEmpty()) {
+            return new ResponseEntity<>("SessionId not valid", HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(bankService.getTransactionsByAccountAndMonth(customer, accountCode, year, month));
+    }
 }

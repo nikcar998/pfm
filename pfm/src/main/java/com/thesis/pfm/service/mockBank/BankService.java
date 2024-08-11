@@ -83,4 +83,15 @@ public class BankService {
         }
         return customer;
     }
+
+    public List<Transaction> getTransactionsByAccountAndMonth(Optional<BankCustomer> customer, String accountCode, int year, int month) {
+        if (customer.isPresent()) {
+            BankCustomer bankCustomer = customer.get();
+            Optional<Account> account = accountRepository.findById(accountCode);
+            if (account.isPresent() && account.get().getCustomer().getUsername().equals(bankCustomer.getUsername())) {
+                return transactionRepository.findByAccountAndMonth(accountCode, year, month);
+            }
+        }
+        return null;
+    }
 }
