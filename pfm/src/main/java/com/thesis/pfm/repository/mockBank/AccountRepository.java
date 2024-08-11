@@ -8,5 +8,4 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, String> {
     List<Account> findByCustomer_Username(String username);
-    Optional<Account> findByIbanAndCustomer_Username(String iban, String username);
 }

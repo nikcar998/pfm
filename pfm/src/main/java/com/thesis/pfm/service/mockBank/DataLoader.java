@@ -1,5 +1,7 @@
 package com.thesis.pfm.service.mockBank;
 
+import com.thesis.pfm.controller.dto.MockBankLoginDto;
+import com.thesis.pfm.controller.mockBank.BankController;
 import com.thesis.pfm.model.mockBank.Account;
 import com.thesis.pfm.model.mockBank.Transaction;
 import com.thesis.pfm.model.mockBank.BankCustomer;
@@ -8,10 +10,15 @@ import com.thesis.pfm.repository.mockBank.TransactionRepository;
 import com.thesis.pfm.repository.mockBank.BankCustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import com.thesis.pfm.batch.AverageSpendingBatchJob;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -25,10 +32,15 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private BankCustomerRepository bankCustomerRepository;
 
+    @Autowired
+    private AverageSpendingBatchJob batchJob;
+
+
     @Override
     public void run(String... args) throws Exception {
         // Mock data for BankCustomer
-        if(bankCustomerRepository.findById("user1").isPresent()){
+        batchJob.executeBatchJob();
+     if(bankCustomerRepository.findById("user1").isPresent()){
             return;
         }
         BankCustomer bankCustomer1 = new BankCustomer();
@@ -52,12 +64,14 @@ public class DataLoader implements CommandLineRunner {
         account1.setPan("1234567812345678");
         account1.setMaskedPan("1234********5678");
         account1.setCurrency("EUR");
-        account1.setName("Primary Account");
+        account1.setName("Conto Attico");
         account1.setCashAccountType("CHECKING");
         account1.setAccountStatus("ACTIVE");
         account1.setBic("BIC12345");
         account1.setOwnerName("User One");
         account1.setCustomer(bankCustomer1);
+        account1.setBalance(new BigDecimal("1534.35"));
+        account1.setNumeroContoCorrente("1000/000005512");
         accountRepository.save(account1);
 
         Account account2 = new Account();
@@ -72,8 +86,11 @@ public class DataLoader implements CommandLineRunner {
         account2.setBic("BIC54321");
         account2.setOwnerName("User One");
         account2.setCustomer(bankCustomer1);
+        account2.setBalance(new BigDecimal("104.88"));
+        account2.setNumeroContoCorrente("1000/000005814");
         accountRepository.save(account2);
 
+        /*
         Account account3 = new Account();
         account3.setIban("IT60X0542811101000000987654");
         account3.setBban("BBAN789");
@@ -86,59 +103,99 @@ public class DataLoader implements CommandLineRunner {
         account3.setBic("BIC98765");
         account3.setOwnerName("User Two");
         account3.setCustomer(bankCustomer2);
+        account1.setBalance(new BigDecimal("2530.55"));
         accountRepository.save(account3);
 
+  /////////////////
+
+ */
         // Mock data for Transactions
+        // Supponendo che `account1` sia già stato creato e disponibile
+        List<Transaction> transactionList = new ArrayList<>();
+
         Transaction transaction1 = new Transaction();
         transaction1.setDataPresaInCarico(LocalDate.now());
         transaction1.setDataEsecuzione(LocalDate.now().plusDays(1));
-        transaction1.setNumeroOrdine("Order123");
-        transaction1.setNumeroContoCorrente("Account123");
-        transaction1.setOrdinante("Ordinante");
-        transaction1.setFiliale("Filiale");
-        transaction1.setBeneficiario("Beneficiario");
-        transaction1.setIndirizzo("Indirizzo");
-        transaction1.setLocalita("Localita");
-        transaction1.setPaese("Paese");
-        transaction1.setIban("IT60X0542811101000000123456");
-        transaction1.setBic("BIC12345");
-        transaction1.setDebitoreEffettivo("Debitore Effettivo");
-        transaction1.setCreditoreEffettivo("Creditore Effettivo");
-        transaction1.setIdentificativoBonifico("Identificativo Bonifico");
-        transaction1.setTipologia("Tipologia");
-        transaction1.setBancaBeneficiario("Banca Beneficiario");
-        transaction1.setDescrizione("Descrizione");
-        transaction1.setImporto(1000.0);
-        transaction1.setTRN("TRN12345");
-        transaction1.setCommissioni(10.0);
-        transaction1.setTotaleOperazione(1010.0);
+        transaction1.setNumeroOrdine("INTER201928334405");
+        transaction1.setOrdinante("Carrozza Nicolo");
+        transaction1.setFiliale("Milano");
+        transaction1.setBeneficiario("Tizio Caio");
+        transaction1.setIndirizzo("");
+        transaction1.setLocalita("");
+        transaction1.setPaese("");
+        transaction1.setIban("IT60X054281110100000024356");
+        transaction1.setBic("BPMOIT22XXX");
+        transaction1.setDebitoreEffettivo("");
+        transaction1.setCreditoreEffettivo("");
+        transaction1.setIdentificativoBonifico("");
+        transaction1.setTipologia("Bonifico");
+        transaction1.setBancaBeneficiario("Unicredit");
+        transaction1.setDescrizione("Regalo di compleanno");
+        transaction1.setImporto(new BigDecimal(100.0));
+        transaction1.setTRN("0321243443923423423333100T");
+        transaction1.setCommissioni(new BigDecimal(00.10));
+        transaction1.setTotaleOperazione(new BigDecimal(100.10));
         transaction1.setAccount(account1);
-        transactionRepository.save(transaction1);
+        transactionList.add(transaction1);
 
-        Transaction transaction2 = new Transaction();
-        transaction2.setDataPresaInCarico(LocalDate.now().minusDays(2));
-        transaction2.setDataEsecuzione(LocalDate.now().minusDays(1));
-        transaction2.setNumeroOrdine("Order456");
-        transaction2.setNumeroContoCorrente("Account456");
-        transaction2.setOrdinante("Ordinante");
-        transaction2.setFiliale("Filiale");
-        transaction2.setBeneficiario("Beneficiario");
-        transaction2.setIndirizzo("Indirizzo");
-        transaction2.setLocalita("Localita");
-        transaction2.setPaese("Paese");
-        transaction2.setIban("IT60X0542811101000000654321");
-        transaction2.setBic("BIC54321");
-        transaction2.setDebitoreEffettivo("Debitore Effettivo");
-        transaction2.setCreditoreEffettivo("Creditore Effettivo");
-        transaction2.setIdentificativoBonifico("Identificativo Bonifico");
-        transaction2.setTipologia("Tipologia");
-        transaction2.setBancaBeneficiario("Banca Beneficiario");
-        transaction2.setDescrizione("Descrizione");
-        transaction2.setImporto(2000.0);
-        transaction2.setTRN("TRN54321");
-        transaction2.setCommissioni(20.0);
-        transaction2.setTotaleOperazione(2020.0);
-        transaction2.setAccount(account2);
-        transactionRepository.save(transaction2);
+// Esempio per generare 40 transazioni simili
+        for (int i = 2; i <= 280; i++) {
+            Transaction transaction = new Transaction();
+            transaction.setDataPresaInCarico(LocalDate.now().minusDays(i));
+            transaction.setDataEsecuzione(LocalDate.now().minusDays(i-1));
+            transaction.setNumeroOrdine("INTER2019283344" + (i * 100 + 5));
+            transaction.setOrdinante("Ordinante " + i);
+            transaction.setFiliale("Filiale " + i);
+            transaction.setBeneficiario("Beneficiario " + i);
+            transaction.setIndirizzo("Indirizzo " + i);
+            transaction.setLocalita("Località " + i);
+            transaction.setPaese("Paese " + i);
+            transaction.setIban("IT60X05428111010000002435" + i);
+            transaction.setBic("BICCODE" + i);
+            transaction.setDebitoreEffettivo("Debitore " + i);
+            transaction.setCreditoreEffettivo("Creditore " + i);
+            transaction.setIdentificativoBonifico("IDBONIFICO" + i);
+            transaction.setTipologia("Bonifico");
+            transaction.setBancaBeneficiario("Banca " + i);
+            transaction.setDescrizione("Descrizione " + i);
+            transaction.setImporto(new BigDecimal(100.0 + i));
+            transaction.setTRN("TRN1234567890" + i);
+            transaction.setCommissioni(new BigDecimal(0.10 + (i * 0.01)));
+            transaction.setTotaleOperazione(new BigDecimal(100.0 + i + 0.10 + (i * 0.01)));
+            transaction.setAccount(account1);
+            transactionList.add(transaction);
+        }
+        for (int i = 2; i <= 190; i++) {
+            Transaction transaction = new Transaction();
+            transaction.setDataPresaInCarico(LocalDate.now().minusDays(i));
+            transaction.setDataEsecuzione(LocalDate.now().minusDays(i-1));
+            transaction.setNumeroOrdine("INTER2019283344" + (i * 100 + 5));
+            transaction.setOrdinante("Ordinante " + i);
+            transaction.setFiliale("Filiale " + i);
+            transaction.setBeneficiario("Beneficiario " + i);
+            transaction.setIndirizzo("Indirizzo " + i);
+            transaction.setLocalita("Località " + i);
+            transaction.setPaese("Paese " + i);
+            transaction.setIban("IT60X05428111010000002435" + i);
+            transaction.setBic("BICCODE" + i);
+            transaction.setDebitoreEffettivo("Debitore " + i);
+            transaction.setCreditoreEffettivo("Creditore " + i);
+            transaction.setIdentificativoBonifico("IDBONIFICO" + i);
+            transaction.setTipologia("Bonifico");
+            transaction.setBancaBeneficiario("Banca " + i);
+            transaction.setDescrizione("Descrizione " + i);
+            transaction.setImporto(new BigDecimal(-199.0 + i));
+            transaction.setTRN("TRN1234567890" + i);
+            transaction.setTotaleOperazione(new BigDecimal(-199.0 + i ));
+            transaction.setAccount(account1);
+            transactionList.add(transaction);
+        }
+
+// Salvataggio di tutte le transazioni nel repository
+        transactionRepository.saveAll(transactionList);
+
+
+
+        //////////////////////////////////////////////////////////////////////////////
     }
 }

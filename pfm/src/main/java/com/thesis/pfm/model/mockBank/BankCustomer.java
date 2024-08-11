@@ -1,10 +1,8 @@
 package com.thesis.pfm.model.mockBank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.thesis.pfm.model.Customer;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,4 +20,7 @@ public class BankCustomer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Account> accounts;
+
+    @OneToOne(mappedBy = "bankCustomer")
+    private Customer customer;
 }

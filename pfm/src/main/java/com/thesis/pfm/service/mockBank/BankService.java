@@ -1,11 +1,13 @@
 package com.thesis.pfm.service.mockBank;
 
+import com.thesis.pfm.model.Customer;
 import com.thesis.pfm.model.mockBank.Account;
 import com.thesis.pfm.model.mockBank.BankCustomer;
 import com.thesis.pfm.model.mockBank.Transaction;
 import com.thesis.pfm.repository.mockBank.AccountRepository;
 import com.thesis.pfm.repository.mockBank.BankCustomerRepository;
 import com.thesis.pfm.repository.mockBank.TransactionRepository;
+import com.thesis.pfm.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,10 @@ public class BankService {
     @Autowired
     private BankCustomerRepository bankCustomerRepository;
 
+    @Autowired
+    private CustomerService customerservice;
+
+
     public BankCustomer authenticate(String username, String password) {
         BankCustomer customer = bankCustomerRepository.findById(username).orElse(null);
         if (customer != null && customer.getPassword().equals(password)) {
@@ -37,6 +43,20 @@ public class BankService {
             customer.setSessionExpiryDate(LocalDate.now().plusDays(1));
             bankCustomerRepository.save(customer);
             return customer;
+        }
+        return null;
+    }
+    public BankCustomer authenticateAndAddBankCustomer(String username, String password, Customer customer) {
+        BankCustomer bankCustomer = bankCustomerRepository.findById(username).orElse(null);
+        if (bankCustomer != null && bankCustomer.getPassword().equals(password)) {
+            UUID randomUUID = UUID.randomUUID();
+            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'.000Z'");
+            bankCustomer.setSessionId(randomUUID.toString().replaceAll("_", "") + sdfSource.format(new Date()));
+            bankCustomer.setSessionExpiryDate(LocalDate.now().plusDays(1));
+            bankCustomerRepository.save(bankCustomer);
+            customer.setBankCustomer(bankCustomer);
+            customerservice.saveCustomer(customer);
+            return bankCustomer;
         }
         return null;
     }
@@ -50,7 +70,7 @@ public class BankService {
             BankCustomer bankCustomer = customer.get();
             Optional<Account> account = accountRepository.findById(iban);
             if (account.isPresent() && account.get().getCustomer().getUsername().equals(bankCustomer.getUsername())) {
-                return transactionRepository.findByAccount_Iban(iban);
+                return transactionRepository.findByAccount_NumeroContoCorrente(iban);
             }
         }
         return null;
