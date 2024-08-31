@@ -7,6 +7,7 @@ import com.thesis.pfm.model.Customer;
 import com.thesis.pfm.service.CustomUserDetailsService;
 import com.thesis.pfm.service.CustomerService;
 import com.thesis.pfm.service.GoogleTokenService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class GoogleLoginController {
     private CustomerService customerservice;
 
     @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody String token) {
+    public ResponseEntity<?> googleLogin(@RequestBody String token, HttpServletResponse response) {
 
         String jwtToken;
 
@@ -49,18 +50,25 @@ public class GoogleLoginController {
 
         String email = tokenProvider.getUserEmailFromJWT(jwtToken);
 
+//        Cookie jwtCookie = new Cookie("jwtToken", jwtToken);
+//        jwtCookie.setHttpOnly(true);
+//        jwtCookie.setSecure(true);
+//        jwtCookie.setPath("/");
+//        jwtCookie.setMaxAge(24 * 60 * 60);
+//
+//        response.addCookie(jwtCookie);
         try {
             customUserDetailsService.loadUserByUsername(email);
 
             return ResponseEntity.ok(GoogleLoginDto.builder()
-                    .jwtToken(jwtToken)
                     .isRegistered(true)
-                    .email(email)   //TODO: CHECK IF USEFUL
+                    .email(email)
+                    .jwtToken(jwtToken)
                     .build());
         } catch (UsernameNotFoundException ex) {
             return ResponseEntity.ok(GoogleLoginDto.builder()
-                    .jwtToken(jwtToken)
                     .isRegistered(false)
+                    .jwtToken(jwtToken)
                     .email(email)
                     .build());
         }

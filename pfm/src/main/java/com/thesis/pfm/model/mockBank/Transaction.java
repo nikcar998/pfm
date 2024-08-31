@@ -1,6 +1,7 @@
 package com.thesis.pfm.model.mockBank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.thesis.pfm.service.mockBank.BankService;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,37 +15,21 @@ public class Transaction {
     private Long id;
 
     private LocalDate dataPresaInCarico;
-
     private LocalDate dataEsecuzione;
-
     private String numeroOrdine;
-
     private String ordinante;
-
     private String filiale;
-
     private String beneficiario;
-
     private String indirizzo;
-
     private String localita;
-
     private String paese;
-
     private String iban;
-
     private String bic;
-
     private String debitoreEffettivo;
-
     private String creditoreEffettivo;
-
     private String identificativoBonifico;
-
     private String tipologia;
-
     private String bancaBeneficiario;
-
     private String descrizione;
 
     @Column(precision = 19, scale = 4)
@@ -62,4 +47,7 @@ public class Transaction {
     @JoinColumn(name = "numero_conto_corrente", nullable = false)
     @JsonBackReference
     private Account account;
+
+//    ///per esempio:
+//    private BankService.TransactionCategory category;
 }

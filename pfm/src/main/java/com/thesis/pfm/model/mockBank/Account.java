@@ -2,6 +2,7 @@ package com.thesis.pfm.model.mockBank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.thesis.pfm.model.Customer;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -41,9 +42,9 @@ public class Account {
     private BigDecimal balance;
 
     @ManyToOne
-    @JoinColumn(name = "customer_username", nullable = false)
+    @JoinColumn(name = "customer_email", nullable = false)
     @JsonBackReference
-    private BankCustomer customer;
+    private Customer customer;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

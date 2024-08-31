@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface BankCustomerRepository extends JpaRepository<BankCustomer, String> {
     Optional<BankCustomer> findBySessionId(String sessionId);
+    Optional<BankCustomer> findByUsernameAndPassword(String username, String password);
 }

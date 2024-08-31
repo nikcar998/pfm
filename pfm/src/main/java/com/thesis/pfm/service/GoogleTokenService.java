@@ -43,12 +43,11 @@ public class GoogleTokenService {
     }
 
     private String generateJwtToken(String email) {
-        // Consider using a stronger algorithm like HS512 or RS256 if security is critical
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day
-                .signWith(SignatureAlgorithm.HS256, jwtSecret) // Consider a stronger algorithm
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 }

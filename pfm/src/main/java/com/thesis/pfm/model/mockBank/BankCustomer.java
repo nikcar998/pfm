@@ -16,11 +16,4 @@ public class BankCustomer {
     private String password;
     private String sessionId;
     private LocalDate sessionExpiryDate;
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Account> accounts;
-
-    @OneToOne(mappedBy = "bankCustomer")
-    private Customer customer;
 }

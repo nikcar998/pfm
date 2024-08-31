@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BankService {
@@ -46,33 +43,32 @@ public class BankService {
         }
         return null;
     }
-    public BankCustomer authenticateAndAddBankCustomer(String username, String password, Customer customer) {
-        BankCustomer bankCustomer = bankCustomerRepository.findById(username).orElse(null);
-        if (bankCustomer != null && bankCustomer.getPassword().equals(password)) {
-            UUID randomUUID = UUID.randomUUID();
-            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'.000Z'");
-            bankCustomer.setSessionId(randomUUID.toString().replaceAll("_", "") + sdfSource.format(new Date()));
-            bankCustomer.setSessionExpiryDate(LocalDate.now().plusDays(1));
-            bankCustomerRepository.save(bankCustomer);
-            customer.setBankCustomer(bankCustomer);
-            customerservice.saveCustomer(customer);
-            return bankCustomer;
-        }
-        return null;
+//    public BankCustomer authenticateAndAddBankCustomer(String username, String password, Customer customer) {
+//        BankCustomer bankCustomer = bankCustomerRepository.findById(username).orElse(null);
+//        if (bankCustomer != null && bankCustomer.getPassword().equals(password)) {
+//            UUID randomUUID = UUID.randomUUID();
+//            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'.000Z'");
+//            bankCustomer.setSessionId(randomUUID.toString().replaceAll("_", "") + sdfSource.format(new Date()));
+//            bankCustomer.setSessionExpiryDate(LocalDate.now().plusDays(1));
+//            bankCustomerRepository.save(bankCustomer);
+//            customer.setBankCustomer(bankCustomer);
+//            customerservice.saveCustomer(customer);
+//            return bankCustomer;
+//        }
+//        return null;
+//    }
+
+    public List<Account> getAllAccounts(Customer customer) {
+        return accountRepository.findByCustomer_Email(customer.getEmail());
     }
 
-    public List<Account> getAllAccounts(Optional<BankCustomer> customer) {
-        return customer.map(bankCustomer -> accountRepository.findByCustomer_Username(bankCustomer.getUsername())).orElse(null);
-    }
+    public List<Transaction> getAllTransactions(Customer customer, String accountCode) {
 
-    public List<Transaction> getAllTransactions(Optional<BankCustomer> customer, String iban) {
-        if (customer.isPresent()) {
-            BankCustomer bankCustomer = customer.get();
-            Optional<Account> account = accountRepository.findById(iban);
-            if (account.isPresent() && account.get().getCustomer().getUsername().equals(bankCustomer.getUsername())) {
-                return transactionRepository.findByAccount_NumeroContoCorrente(iban);
-            }
+        Optional<Account> account = accountRepository.findById(accountCode);
+        if (account.isPresent() && account.get().getCustomer().getEmail().equals(customer.getEmail())) {
+            return transactionRepository.findByAccount_NumeroContoCorrente(accountCode);
         }
+
         return null;
     }
 
@@ -84,14 +80,51 @@ public class BankService {
         return customer;
     }
 
-    public List<Transaction> getTransactionsByAccountAndMonth(Optional<BankCustomer> customer, String accountCode, int year, int month) {
-        if (customer.isPresent()) {
-            BankCustomer bankCustomer = customer.get();
-            Optional<Account> account = accountRepository.findById(accountCode);
-            if (account.isPresent() && account.get().getCustomer().getUsername().equals(bankCustomer.getUsername())) {
-                return transactionRepository.findByAccountAndMonth(accountCode, year, month);
-            }
+    public List<Transaction> getTransactionsByAccountAndMonth(Customer customer, String accountCode, int year, int month) {
+        Optional<Account> account = accountRepository.findById(accountCode);
+        if (account.isPresent() && account.get().getCustomer().getEmail().equals(customer.getEmail())) {
+            return transactionRepository.findByAccountAndMonth(accountCode, year, month);
         }
+//      categorizeTransactions(Arrays.asList(new Transaction()));
         return null;
     }
-}
+
+
+    /////////////////////////codice mock per esempio ////////////////////
+//    public class TransactionCategory {}
+//
+//    private class CategoryRepository{
+//        public List<TransactionCategory> findAll(){
+//            return Arrays.asList(new TransactionCategory());
+//        }
+//    }
+//
+//    private double calculateCategoryScore(Transaction trn, TransactionCategory cat){
+//        return 100;
+//    }
+//
+//    CategoryRepository categoryRepository = new CategoryRepository();
+//
+//    public void categorizeTransactions(List<Transaction> transactions) {
+//        List<TransactionCategory> categories = categoryRepository.findAll();
+//
+//        for (Transaction transaction : transactions) {
+//            TransactionCategory bestCategory = null;
+//            double highestScore = 0.0;
+//
+//            for (TransactionCategory category : categories) {
+//                double score = calculateCategoryScore(transaction, category);
+//
+//                if (score > highestScore) {
+//                    highestScore = score;
+//                    bestCategory = category;
+//                }
+//            }
+//
+//            if (bestCategory != null) {
+//                transaction.setCategory(bestCategory);
+//                transactionRepository.save(transaction);
+//            }
+//        }
+    }
+

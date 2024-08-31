@@ -1,6 +1,7 @@
 package com.thesis.pfm.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.thesis.pfm.model.mockBank.Account;
 import com.thesis.pfm.model.mockBank.BankCustomer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -37,8 +39,7 @@ public class Customer {
     @Column(nullable = true)
     private Integer averageExpance;
 
-    @OneToOne
-    @JoinColumn(name = "bank_customer_username")
+    @OneToMany(mappedBy = "customer")
     @JsonManagedReference
-    private BankCustomer bankCustomer;
+    private List<Account> accounts;
 }

@@ -43,17 +43,13 @@ public class CustomerServiceImpl implements CustomerService {
             Customer customer = customerRepository.findById(customerId)
                     .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-            // Trova il BankCustomer associato al Customer
-            BankCustomer bankCustomer = customer.getBankCustomer();
-
-            if (bankCustomer != null) {
                 // Calcola la media delle spese (transazioni negative) degli ultimi mesi
                 BigDecimal averageExpance = transactionRepository.findAverageExpanceLastMonths(
-                        bankCustomer.getUsername(), LocalDate.now().minusMonths(3));
+                        customer.getEmail(), LocalDate.now().minusMonths(3));
 
                 // Calcola la media degli incassi (transazioni positive) degli ultimi mesi
                 BigDecimal averageIncome = transactionRepository.findAverageIncomeLastMonths(
-                        bankCustomer.getUsername(), LocalDate.now().minusMonths(3));
+                        customer.getEmail(), LocalDate.now().minusMonths(3));
 
                 // Imposta le medie nei campi del Customer
                 customer.setAverageExpance(averageExpance != null ? averageExpance.intValue() : null);
@@ -61,7 +57,6 @@ public class CustomerServiceImpl implements CustomerService {
 
                 // Salva il Customer aggiornato
                 customerRepository.save(customer);
-            }
         });
     }
 }

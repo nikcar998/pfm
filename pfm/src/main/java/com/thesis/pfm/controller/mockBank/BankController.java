@@ -30,15 +30,10 @@ public class BankController {
     private CustomerService customerservice;
 
     @PostMapping("/bankLogin")
-    public ResponseEntity<?> login(@RequestBody MockBankLoginDto dto, @RequestHeader (name="Authorization") String token) {
-        Customer cust = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
-        BankCustomer bankCustomer = new BankCustomer();
-         if(cust.getBankCustomer() == null){
-             bankCustomer = bankService.authenticateAndAddBankCustomer(dto.getUsername(), dto.getPassword(), cust);
-         }else{
-             bankCustomer = bankService.authenticate(dto.getUsername(), dto.getPassword());
-         }
+    public ResponseEntity<?> login(@RequestBody MockBankLoginDto dto) {
+        BankCustomer bankCustomer = bankService.authenticate(dto.getUsername(), dto.getPassword());
 
+        //TODO: Aggiungere codice che aggiunge account e transazioni
          if(bankCustomer == null){
              return new ResponseEntity<String>("Bank credentials not valid", HttpStatus.FORBIDDEN);
          }
@@ -46,19 +41,20 @@ public class BankController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<?> getAllAccounts(@RequestHeader String sessionId) {
-        Optional<BankCustomer> customer = isAuthorized(sessionId);
-        if(customer.isEmpty()) {
-            return new ResponseEntity<String>("SessionId not valid", HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> getAllAccounts(@RequestHeader (name="Authorization") String token) {
+        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
+
+        if(customer == null) {
+            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(bankService.getAllAccounts(customer));
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<?> getAllTransactions(@RequestHeader String sessionId, @RequestHeader String accountCode) {
-        Optional<BankCustomer> customer = isAuthorized(sessionId);
-        if(customer.isEmpty()) {
-            return new ResponseEntity<String>("SessionId not valid", HttpStatus.FORBIDDEN);
+    public ResponseEntity<?> getAllTransactions(@RequestHeader String accountCode, @RequestHeader (name="Authorization") String token) {
+        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
+        if(customer == null) {
+            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(bankService.getAllTransactions(customer, accountCode));
     }
@@ -71,9 +67,10 @@ public class BankController {
     public ResponseEntity<?> getTransactionsByMonth(@RequestHeader String sessionId,
                                                     @RequestHeader String accountCode,
                                                     @RequestParam int year,
-                                                    @RequestParam int month) {
-        Optional<BankCustomer> customer = isAuthorized(sessionId);
-        if (customer.isEmpty()) {
+                                                    @RequestParam int month,
+                                                    @RequestHeader (name="Authorization") String token) {
+        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);;
+        if (customer == null) {
             return new ResponseEntity<>("SessionId not valid", HttpStatus.FORBIDDEN);
         }
         return ResponseEntity.ok(bankService.getTransactionsByAccountAndMonth(customer, accountCode, year, month));

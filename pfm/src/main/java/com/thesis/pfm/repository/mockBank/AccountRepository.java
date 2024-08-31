@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, String> {
-    List<Account> findByCustomer_Username(String username);
+    List<Account> findByCustomer_Email(String username);
 }
