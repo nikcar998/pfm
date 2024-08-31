@@ -9,5 +9,5 @@ public interface CustomerService {
     public Customer saveCustomer(Customer customer);
     public List<Customer> getAllStudents();
     public List<Customer> getCustomerByEmail(String email);
-    CompletableFuture<Void> updateCustomerTransactionAverages(int customerId);
+    CompletableFuture<Void> updateCustomerTransactionAverages(String customerEmail);
 }

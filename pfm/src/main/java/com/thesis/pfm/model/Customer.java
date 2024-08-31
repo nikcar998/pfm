@@ -18,20 +18,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    private String email;
 
     private String name;
     private String surname;
-    private String email;
     private Date bornDate;
-
-    @Column(nullable = true)
-    private String job;
-
-    @Column(nullable = true)
-    private Integer familyMembers;
 
     @Column(nullable = true)
     private Integer averageIncome;

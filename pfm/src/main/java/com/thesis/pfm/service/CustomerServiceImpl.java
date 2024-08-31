@@ -37,10 +37,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Async
-    public CompletableFuture<Void> updateCustomerTransactionAverages(int customerId) {
+    public CompletableFuture<Void> updateCustomerTransactionAverages(String email) {
         return CompletableFuture.runAsync(() -> {
             // Trova il Customer tramite ID
-            Customer customer = customerRepository.findById(customerId)
+            Customer customer = customerRepository.findById(email)
                     .orElseThrow(() -> new RuntimeException("Customer not found"));
 
                 // Calcola la media delle spese (transazioni negative) degli ultimi mesi

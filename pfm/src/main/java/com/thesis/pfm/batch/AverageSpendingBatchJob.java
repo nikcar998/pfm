@@ -32,7 +32,7 @@ public class AverageSpendingBatchJob {
     public void executeBatchJob() {
         List<Customer> customers = customerRepository.findAll();
         List<CompletableFuture<Void>> futures = customers.stream()
-                .map(customer -> customerService.updateCustomerTransactionAverages(customer.getCustomerId()))
+                .map(customer -> customerService.updateCustomerTransactionAverages(customer.getEmail()))
                 .toList();
 
         // Aspetta che tutte le operazioni async siano completate
