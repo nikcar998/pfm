@@ -1,5 +1,6 @@
 package com.thesis.pfm.service.mockBank;
 
+import com.thesis.pfm.BankCustomerResource;
 import com.thesis.pfm.model.Customer;
 import com.thesis.pfm.model.Account;
 import com.thesis.pfm.model.TransactionCategory;
@@ -10,6 +11,7 @@ import com.thesis.pfm.repository.mockBank.AccountRepository;
 import com.thesis.pfm.repository.mockBank.BankCustomerRepository;
 import com.thesis.pfm.repository.mockBank.TransactionRepository;
 import com.thesis.pfm.service.CustomerService;
+import com.thesis.pfm.utils.CreateData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,18 +37,35 @@ public class BankService {
     @Autowired
     private TransactionCategoryRepository transactionCategoryRepository;
 
+    @Autowired
+    private CreateData createData;
 
-    public BankCustomer authenticate(String username, String password) {
-        BankCustomer customer = bankCustomerRepository.findById(username).orElse(null);
-        if (customer != null && customer.getPassword().equals(password)) {
-            UUID randomUUID = UUID.randomUUID();
-            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'.000Z'");
-            customer.setSessionId(randomUUID.toString().replaceAll("_", "") + sdfSource.format(new Date()));
-            customer.setSessionExpiryDate(LocalDate.now().plusDays(1));
-            bankCustomerRepository.save(customer);
-            return customer;
+
+    public BankCustomerResource authenticate(String username, String password, Customer customer) {
+        BankCustomer bankCustomer = bankCustomerRepository.findById(username).orElse(null);
+        if (bankCustomer == null || !bankCustomer.getPassword().equals(password)) {
+            return null;
         }
-        return null;
+
+        //Crea dati mock per il customer nel caso non ci siano già
+        List<Account> accountList = createData.createAccounts(customer);
+        List<Transaction> transactionList = createData.addTransactionsWithDescription(accountList.get(0), null, null, true);
+
+        UUID randomUUID = UUID.randomUUID();
+        SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'.000Z'");
+        bankCustomer.setSessionId(randomUUID.toString().replaceAll("_", "") + sdfSource.format(new Date()));
+        bankCustomer.setSessionExpiryDate(LocalDate.now().plusDays(1));
+        bankCustomerRepository.save(bankCustomer);
+
+        BankCustomerResource bankCustomerResource = new BankCustomerResource();
+        bankCustomerResource.setBankCustomer(bankCustomer);
+        bankCustomerResource.setAccountList(accountList);
+        bankCustomerResource.setTransactionList(transactionList);
+        bankCustomerResource.setCustomer(customer);
+
+
+        return bankCustomerResource;
+
     }
 //    public BankCustomer authenticateAndAddBankCustomer(String username, String password, Customer customer) {
 //        BankCustomer bankCustomer = bankCustomerRepository.findById(username).orElse(null);

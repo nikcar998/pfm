@@ -1,5 +1,6 @@
 package com.thesis.pfm.controller.mockBank;
 
+import com.thesis.pfm.BankCustomerResource;
 import com.thesis.pfm.config.JwtTokenProvider;
 import com.thesis.pfm.controller.dto.MockBankLoginDto;
 import com.thesis.pfm.model.Customer;
@@ -25,38 +26,38 @@ public class BankController {
     private CustomerService customerservice;
 
     @PostMapping("/bankLogin")
-    public ResponseEntity<?> login(@RequestBody MockBankLoginDto dto) {
-        BankCustomer bankCustomer = bankService.authenticate(dto.getUsername(), dto.getPassword());
+    public ResponseEntity<?> login(@RequestBody MockBankLoginDto dto, @RequestHeader (name="Authorization") String token) {
+        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
+        BankCustomerResource bankCustomer = bankService.authenticate(dto.getUsername(), dto.getPassword(), customer);
 
-        //TODO: Aggiungere codice che aggiunge account e transazioni
          if(bankCustomer == null){
              return new ResponseEntity<String>("Bank credentials not valid", HttpStatus.FORBIDDEN);
          }
          return ResponseEntity.ok(bankCustomer);
     }
-
-    @GetMapping("/accounts")
-    public ResponseEntity<?> getAllAccounts(@RequestHeader (name="Authorization") String token) {
-        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
-
-        if(customer == null) {
-            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
-        }
-        return ResponseEntity.ok(bankService.getAllAccounts(customer));
-    }
-
-    @GetMapping("/transactions")
-    public ResponseEntity<?> getAllTransactions(@RequestHeader String accountCode, @RequestHeader (name="Authorization") String token) {
-        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
-        if(customer == null) {
-            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
-        }
-        return ResponseEntity.ok(bankService.getAllTransactions(customer, accountCode));
-    }
-
-    private Optional<BankCustomer> isAuthorized(String sessionId){
-        return bankService.getCustomerBySessionId(sessionId);
-    }
+//
+//    @GetMapping("/accounts")
+//    public ResponseEntity<?> getAllAccounts(@RequestHeader (name="Authorization") String token) {
+//        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
+//
+//        if(customer == null) {
+//            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
+//        }
+//        return ResponseEntity.ok(bankService.getAllAccounts(customer));
+//    }
+//
+//    @GetMapping("/transactions")
+//    public ResponseEntity<?> getAllTransactions(@RequestHeader String accountCode, @RequestHeader (name="Authorization") String token) {
+//        Customer customer = customerservice.getCustomerByEmail(tokenProvider.getUserEmailFromJWT(token.substring(7))).get(0);
+//        if(customer == null) {
+//            return new ResponseEntity<String>("Error: customer not found", HttpStatus.FORBIDDEN);
+//        }
+//        return ResponseEntity.ok(bankService.getAllTransactions(customer, accountCode));
+//    }
+//
+//    private Optional<BankCustomer> isAuthorized(String sessionId){
+//        return bankService.getCustomerBySessionId(sessionId);
+//    }
 
     @GetMapping("/transactions/month")
     public ResponseEntity<?> getTransactionsByMonth(@RequestHeader String sessionId,

@@ -114,7 +114,7 @@ public class TransactionCategoryService {
 
         // Stipendi e pensioni
         if ("Stipendi e pensioni".equalsIgnoreCase(category.getName())) {
-            if (description.contains("stipendio") || description.contains("pensione")) {
+            if ((description.contains("stipendio") || description.contains("pensione")) && amount.compareTo(BigDecimal.ZERO) > 0) {
                 score += 1.0;
             }
         }

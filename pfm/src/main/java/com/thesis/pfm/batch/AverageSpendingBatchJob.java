@@ -2,16 +2,11 @@ package com.thesis.pfm.batch;
 
 import com.thesis.pfm.model.Customer;
 import com.thesis.pfm.repository.CustomerRepository;
-import com.thesis.pfm.repository.mockBank.TransactionRepository;
 import com.thesis.pfm.service.CustomerService;
-import com.thesis.pfm.service.CustomerServiceImpl;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

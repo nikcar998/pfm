@@ -37,7 +37,7 @@ public class GoogleLoginController {
     private CustomerService customerservice;
 
     @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody String token, HttpServletResponse response) {
+    public ResponseEntity<?> googleLogin(@RequestBody String token) {
 
         String jwtToken;
 
