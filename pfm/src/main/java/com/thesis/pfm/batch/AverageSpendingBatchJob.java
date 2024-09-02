@@ -55,32 +55,5 @@ public class AverageSpendingBatchJob {
 //        }
 //    }
 //
-//    private class EmailService {
-//        public void sendSimpleEmail(String to, String subject, String text){}
-//    }
-//    CustomerBudgetRepository customerBudgetRepository = new CustomerBudgetRepository();
-//    EmailService emailService = new EmailService();
-//    @Autowired
-//    TransactionRepository transactionRepository;
-//
-//    @Scheduled(cron = "0 0 2 * * ?")
-//    public void checkBudgetsAndNotify() {
-//        List<CustomerBudget> customerBudgets = customerBudgetRepository.findAll();
-//
-//        for (CustomerBudget customerBudget : customerBudgets) {
-//            BigDecimal totalSpent = transactionRepository.sumByCustomerAndCategory(
-//                    customerBudget.getCustomerEmail(),
-//                    customerBudget.getCategory().getId()
-//            );
-//
-//            if (totalSpent.compareTo(customerBudget.getCategoryAmount()) > 0) {
-//                emailService.sendSimpleEmail(
-//                        customerBudget.getCustomerEmail(),
-//                        "Spending Limit Exceeded",
-//                        String.format("You have exceeded your spending limit for the category '%s'. Total Spent: $%.2f. Limit: $%.2f",
-//                                customerBudget.getCategory().getName(), totalSpent, customerBudget.getCategoryAmount())
-//                );
-//            }
-//        }
-//    }
+
 }

@@ -47,6 +47,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 //    BigDecimal sumByCustomerAndCategory(@Param("customerEmail") String customerEmail,
 //                                        @Param("categoryId") Long categoryId);
 
+    @Query("SELECT t FROM Transaction t JOIN FETCH t.transactionCategory tc WHERE t.account.customer.email = :customerEmail AND tc.id = :categoryId")
+    List<Transaction> findTransactionsByCustomerAndCategory(
+            @Param("customerEmail") String customerEmail,
+            @Param("categoryId") Long categoryId);
+
     @Query("SELECT t FROM Transaction t " +
             "WHERE t.account.customer.email = :email " +
             "AND t.dataEsecuzione BETWEEN :startDate AND :endDate")
