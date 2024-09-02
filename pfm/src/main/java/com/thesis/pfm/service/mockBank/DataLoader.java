@@ -1,13 +1,16 @@
 package com.thesis.pfm.service.mockBank;
 
 import com.thesis.pfm.model.Customer;
-import com.thesis.pfm.model.mockBank.Account;
-import com.thesis.pfm.model.mockBank.Transaction;
+import com.thesis.pfm.model.Account;
+import com.thesis.pfm.model.Transaction;
+import com.thesis.pfm.model.TransactionCategory;
 import com.thesis.pfm.model.mockBank.BankCustomer;
 import com.thesis.pfm.repository.CustomerRepository;
+import com.thesis.pfm.repository.TransactionCategoryRepository;
 import com.thesis.pfm.repository.mockBank.AccountRepository;
 import com.thesis.pfm.repository.mockBank.TransactionRepository;
 import com.thesis.pfm.repository.mockBank.BankCustomerRepository;
+import com.thesis.pfm.service.TransactionCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -37,6 +40,12 @@ public class DataLoader implements CommandLineRunner {
     @Autowired
     private AverageSpendingBatchJob averageSpendingBatchJob;
 
+    @Autowired
+    private TransactionCategoryRepository transactionCategoryRepository;
+
+    @Autowired
+    private TransactionCategoryService transactionCategoryService;
+
 
     @Override
     public void run(String... args) throws Exception {
@@ -48,10 +57,89 @@ public class DataLoader implements CommandLineRunner {
 
         Account account1 = createAccounts(customer);
 
-        createTransactions(account1);
-        addSingleTransaction(account1);
+//        createTransactions(account1);
+//        addSingleTransaction(account1);
+
+        createTransactionCategories();
+
+        addSingleTransaction(accountRepository.findByCustomer_Email("nicolocarrozza98@gmail.com").get(0));
+
+        transactionCategoryService.categorizeTransactions(transactionRepository.findAll());
+
 
         averageSpendingBatchJob.executeBatchJob();
+
+    }
+
+    private void createTransactionCategories() {
+        List<TransactionCategory> transactionCategory = new ArrayList<>();
+        transactionCategory.add(TransactionCategory.builder().name("Acqua").build());
+        transactionCategory.add(TransactionCategory.builder().name("Addebiti vari").build());
+        transactionCategory.add(TransactionCategory.builder().name("Addebito mia carta di credito").build());
+        transactionCategory.add(TransactionCategory.builder().name("Affitti incassati").build());
+        transactionCategory.add(TransactionCategory.builder().name("Alimenti coniuge e figli").build());
+        transactionCategory.add(TransactionCategory.builder().name("Alimenti coniuge e figli ricevuti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Assegni incassati").build());
+        transactionCategory.add(TransactionCategory.builder().name("Assegni pagati").build());
+        transactionCategory.add(TransactionCategory.builder().name("Assicurazione auto e moto e tasse veicoli").build());
+        transactionCategory.add(TransactionCategory.builder().name("Associazioni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Bonifici in uscita").build());
+        transactionCategory.add(TransactionCategory.builder().name("Bonifici ricevuti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Carburanti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Casa varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Cellulare").build());
+        transactionCategory.add(TransactionCategory.builder().name("Corsi e sport").build());
+        transactionCategory.add(TransactionCategory.builder().name("Disinvestimenti, BDR e XME Salvadanaio").build());
+        transactionCategory.add(TransactionCategory.builder().name("Domiciliazioni e Utenze").build());
+        transactionCategory.add(TransactionCategory.builder().name("Donazioni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Entrate varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Erogazione Finanziamento").build());
+        transactionCategory.add(TransactionCategory.builder().name("Famiglie varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Farmacia").build());
+        transactionCategory.add(TransactionCategory.builder().name("Gas & energia elettrica").build());
+        transactionCategory.add(TransactionCategory.builder().name("Generi alimentari e supermercato").build());
+        transactionCategory.add(TransactionCategory.builder().name("Giroconti in uscita").build());
+        transactionCategory.add(TransactionCategory.builder().name("Giroconto in entrata").build());
+        transactionCategory.add(TransactionCategory.builder().name("Imposte sul reddito e tasse varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Imposte, bolli e commissioni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Interessi e cedole").build());
+        transactionCategory.add(TransactionCategory.builder().name("Investimenti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Istruzione").build());
+        transactionCategory.add(TransactionCategory.builder().name("Libri, film e musica").build());
+        transactionCategory.add(TransactionCategory.builder().name("Manutenzione casa").build());
+        transactionCategory.add(TransactionCategory.builder().name("Multe").build());
+        transactionCategory.add(TransactionCategory.builder().name("Pagamento affitti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Pedaggi e Telepass").build());
+        transactionCategory.add(TransactionCategory.builder().name("Polizze").build());
+        transactionCategory.add(TransactionCategory.builder().name("Polizze casa").build());
+        transactionCategory.add(TransactionCategory.builder().name("Prelievi").build());
+        transactionCategory.add(TransactionCategory.builder().name("Prestiti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rate e leasing veicoli").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rate Mutuo e Finanziamento").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rate piani pensionistici").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rate prestiti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Regali").build());
+        transactionCategory.add(TransactionCategory.builder().name("Regali ricevuti").build());
+        transactionCategory.add(TransactionCategory.builder().name("Ricarica carte").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rimborsi spese e storni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Rimborsi spese mediche").build());
+        transactionCategory.add(TransactionCategory.builder().name("Riscaldamento").build());
+        transactionCategory.add(TransactionCategory.builder().name("Salute e benessere varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Spese importanti e ristrutturazione").build());
+        transactionCategory.add(TransactionCategory.builder().name("Spese mediche").build());
+        transactionCategory.add(TransactionCategory.builder().name("Spese per l'infanzia").build());
+        transactionCategory.add(TransactionCategory.builder().name("Spettacoli e musei").build());
+        transactionCategory.add(TransactionCategory.builder().name("Stipendi e pensioni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Storni").build());
+        transactionCategory.add(TransactionCategory.builder().name("Tasse sulla casa").build());
+        transactionCategory.add(TransactionCategory.builder().name("Tempo libero varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Trasporti varie").build());
+        transactionCategory.add(TransactionCategory.builder().name("Trasporti, noleggi, taxi e parcheggi ").build());
+        transactionCategory.add(TransactionCategory.builder().name("Treno, aereo, nave").build());
+        transactionCategory.add(TransactionCategory.builder().name("TV, Internet, telefono").build());
+        transactionCategory.add(TransactionCategory.builder().name("Viaggi e vacanze").build());
+
+        transactionCategoryRepository.saveAll(transactionCategory);
 
     }
 
@@ -98,7 +186,6 @@ public class DataLoader implements CommandLineRunner {
         account1.setMaskedPan("1234********5678");
         account1.setCurrency("EUR");
         account1.setName("Conto Attico");
-        account1.setCashAccountType("CHECKING");
         account1.setAccountStatus("ACTIVE");
         account1.setBic("BIC12345");
         account1.setOwnerName("User One");
@@ -114,7 +201,6 @@ public class DataLoader implements CommandLineRunner {
         account2.setMaskedPan("8765********4321");
         account2.setCurrency("EUR");
         account2.setName("Savings Account");
-        account2.setCashAccountType("SAVINGS");
         account2.setAccountStatus("ACTIVE");
         account2.setBic("BIC54321");
         account2.setOwnerName("User One");
@@ -194,16 +280,16 @@ public class DataLoader implements CommandLineRunner {
         transactionRepository.saveAll(transactionList);
     }
 
-    private void addSingleTransaction(Account account1){
+    private Transaction addSingleTransaction(Account account1){
 
         if(account1 == null){
-            return;
+            return null;
         }
 
         Transaction transaction1 = new Transaction();
         transaction1.setDataPresaInCarico(LocalDate.now());
-        transaction1.setDataEsecuzione(LocalDate.now().plusDays(1));
-        transaction1.setNumeroOrdine("INTER201928334405");
+        transaction1.setDataEsecuzione(LocalDate.now().plusDays(-1));
+        transaction1.setNumeroOrdine("INTER2019283344056");
         transaction1.setOrdinante("Carrozza Nicolo");
         transaction1.setFiliale("Milano");
         transaction1.setBeneficiario("Tizio Caio");
@@ -217,11 +303,13 @@ public class DataLoader implements CommandLineRunner {
         transaction1.setIdentificativoBonifico("");
         transaction1.setTipologia("Bonifico");
         transaction1.setBancaBeneficiario("Unicredit");
-        transaction1.setDescrizione("Regalo di compleanno");
-        transaction1.setImporto(new BigDecimal(100.0));
+        transaction1.setDescrizione("Farmacia albergo e ristorante");
+        transaction1.setImporto(new BigDecimal(-100.0));
         transaction1.setTRN("0321243443923423423333100T");
         transaction1.setCommissioni(new BigDecimal(00.10));
-        transaction1.setTotaleOperazione(new BigDecimal(100.10));
+        transaction1.setTotaleOperazione(new BigDecimal(-100.10));
         transaction1.setAccount(account1);
+
+        return transactionRepository.save(transaction1);
     }
 }

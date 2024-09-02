@@ -1,9 +1,11 @@
 package com.thesis.pfm.service.mockBank;
 
 import com.thesis.pfm.model.Customer;
-import com.thesis.pfm.model.mockBank.Account;
+import com.thesis.pfm.model.Account;
+import com.thesis.pfm.model.TransactionCategory;
 import com.thesis.pfm.model.mockBank.BankCustomer;
-import com.thesis.pfm.model.mockBank.Transaction;
+import com.thesis.pfm.model.Transaction;
+import com.thesis.pfm.repository.TransactionCategoryRepository;
 import com.thesis.pfm.repository.mockBank.AccountRepository;
 import com.thesis.pfm.repository.mockBank.BankCustomerRepository;
 import com.thesis.pfm.repository.mockBank.TransactionRepository;
@@ -29,6 +31,9 @@ public class BankService {
 
     @Autowired
     private CustomerService customerservice;
+
+    @Autowired
+    private TransactionCategoryRepository transactionCategoryRepository;
 
 
     public BankCustomer authenticate(String username, String password) {
@@ -91,40 +96,32 @@ public class BankService {
 
 
     /////////////////////////codice mock per esempio ////////////////////
-//    public class TransactionCategory {}
-//
-//    private class CategoryRepository{
-//        public List<TransactionCategory> findAll(){
-//            return Arrays.asList(new TransactionCategory());
-//        }
-//    }
-//
-//    private double calculateCategoryScore(Transaction trn, TransactionCategory cat){
-//        return 100;
-//    }
-//
-//    CategoryRepository categoryRepository = new CategoryRepository();
-//
-//    public void categorizeTransactions(List<Transaction> transactions) {
-//        List<TransactionCategory> categories = categoryRepository.findAll();
-//
-//        for (Transaction transaction : transactions) {
-//            TransactionCategory bestCategory = null;
-//            double highestScore = 0.0;
-//
-//            for (TransactionCategory category : categories) {
-//                double score = calculateCategoryScore(transaction, category);
-//
-//                if (score > highestScore) {
-//                    highestScore = score;
-//                    bestCategory = category;
-//                }
-//            }
-//
-//            if (bestCategory != null) {
-//                transaction.setCategory(bestCategory);
-//                transactionRepository.save(transaction);
-//            }
-//        }
+
+    private double calculateCategoryScore(Transaction trn, TransactionCategory cat) {
+        return 100;
     }
+
+    public void categorizeTransactions(List<Transaction> transactions) {
+        List<TransactionCategory> categories = transactionCategoryRepository.findAll();
+
+        for (Transaction transaction : transactions) {
+            TransactionCategory bestCategory = null;
+            double highestScore = 0.0;
+
+            for (TransactionCategory category : categories) {
+                double score = calculateCategoryScore(transaction, category);
+
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestCategory = category;
+                }
+            }
+
+            if (bestCategory != null) {
+                transaction.setTransactionCategory(bestCategory);
+                transactionRepository.save(transaction);
+            }
+        }
+    }
+}
 

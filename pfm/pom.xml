@@ -84,6 +84,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.batch</groupId>-->
+<!--			<artifactId>spring-batch-core</artifactId>-->
+<!--			<version>4.3.7</version> &lt;!&ndash; O la versione che desideri utilizzare &ndash;&gt;-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>

@@ -1,10 +1,9 @@
 package com.thesis.pfm.repository.mockBank;
 
-import com.thesis.pfm.model.mockBank.Account;
+import com.thesis.pfm.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, String> {
     List<Account> findByCustomer_Email(String username);

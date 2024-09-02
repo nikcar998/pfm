@@ -1,7 +1,7 @@
 //package com.thesis.pfm.batch;
 //
 //import com.thesis.pfm.model.Customer;
-//import com.thesis.pfm.model.mockBank.Transaction;
+//import com.thesis.pfm.model.Transaction;
 //import com.thesis.pfm.repository.CustomerRepository;
 //import com.thesis.pfm.repository.mockBank.TransactionRepository;
 //import org.springframework.batch.core.Job;
@@ -114,3 +114,4 @@
 //                transactions.size() >= 3 ? "quarterly" : "monthly");
 //    }
 //}
+//

@@ -1,6 +1,6 @@
 package com.thesis.pfm.repository.mockBank;
 
-import com.thesis.pfm.model.mockBank.Transaction;
+import com.thesis.pfm.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -47,11 +47,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 //    BigDecimal sumByCustomerAndCategory(@Param("customerEmail") String customerEmail,
 //                                        @Param("categoryId") Long categoryId);
 
-//    @Query("SELECT t FROM Transaction t " +
-//            "WHERE t.account.customer.email = :email " +
-//            "AND t.executionDate BETWEEN :startDate AND :endDate")
-//    List<Transaction> findByCustomerAndDateRange(@Param("email") String email,
-//                                                 @Param("startDate") LocalDate startDate,
-//                                                 @Param("endDate") LocalDate endDate);
+    @Query("SELECT t FROM Transaction t " +
+            "WHERE t.account.customer.email = :email " +
+            "AND t.dataEsecuzione BETWEEN :startDate AND :endDate")
+    List<Transaction> findByCustomerAndDateRange(@Param("email") String email,
+                                                 @Param("startDate") LocalDate startDate,
+                                                 @Param("endDate") LocalDate endDate);
+
 
 }

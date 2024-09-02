@@ -3,10 +3,7 @@ package com.thesis.pfm.controller.mockBank;
 import com.thesis.pfm.config.JwtTokenProvider;
 import com.thesis.pfm.controller.dto.MockBankLoginDto;
 import com.thesis.pfm.model.Customer;
-import com.thesis.pfm.model.mockBank.Account;
-import com.thesis.pfm.model.mockBank.Transaction;
 import com.thesis.pfm.model.mockBank.BankCustomer;
-import com.thesis.pfm.service.CustomUserDetailsService;
 import com.thesis.pfm.service.CustomerService;
 import com.thesis.pfm.service.mockBank.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController

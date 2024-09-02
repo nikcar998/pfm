@@ -1,7 +1,6 @@
-package com.thesis.pfm.model.mockBank;
+package com.thesis.pfm.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.thesis.pfm.service.mockBank.BankService;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -48,6 +47,8 @@ public class Transaction {
     @JsonBackReference
     private Account account;
 
-//    ///per esempio:
-//    private BankService.TransactionCategory category;
+    // Relazione Many-to-One con TransactionCategory
+    @ManyToOne
+    @JoinColumn(name = "transaction_category_id")
+    private TransactionCategory transactionCategory;
 }

@@ -1,8 +1,6 @@
 package com.thesis.pfm.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.thesis.pfm.model.mockBank.Account;
-import com.thesis.pfm.model.mockBank.BankCustomer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +33,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     @JsonManagedReference
     private List<Account> accounts;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Subscription> subscriptions;
 }
