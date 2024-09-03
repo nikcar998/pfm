@@ -14,7 +14,7 @@ public class CustomerBudgetService {
     private CustomerBudgetRepository customerBudgetRepository;
 
     // Metodo per creare o aggiornare un budget
-    public CustomerBudget createOrUpdateBudget(String customerEmail, Long categoryId, BigDecimal amount) {
+    public CustomerBudget createOrUpdateBudget(String customerEmail, int categoryId, BigDecimal amount) {
         CustomerBudget existingBudget = customerBudgetRepository.findByCustomerEmailAndCategoryId(customerEmail, categoryId);
 
         if (existingBudget != null) {

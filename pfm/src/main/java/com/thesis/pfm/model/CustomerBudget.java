@@ -22,7 +22,7 @@ public class CustomerBudget {
 
     @Id
     @Column(name = "category_id")
-    private Long categoryId; // chiave primaria
+    private int categoryId; // chiave primaria
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_email", insertable = false, updatable = false)

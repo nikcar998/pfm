@@ -11,5 +11,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CustomerBudgetId implements Serializable {
     private String customerEmail;
-    private Long categoryId;
+    private int categoryId;
 }

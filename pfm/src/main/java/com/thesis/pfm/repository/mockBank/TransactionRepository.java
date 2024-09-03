@@ -50,7 +50,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM Transaction t JOIN FETCH t.transactionCategory tc WHERE t.account.customer.email = :customerEmail AND tc.id = :categoryId")
     List<Transaction> findTransactionsByCustomerAndCategory(
             @Param("customerEmail") String customerEmail,
-            @Param("categoryId") Long categoryId);
+            @Param("categoryId") int categoryId);
 
     @Query("SELECT t FROM Transaction t " +
             "WHERE t.account.customer.email = :email " +

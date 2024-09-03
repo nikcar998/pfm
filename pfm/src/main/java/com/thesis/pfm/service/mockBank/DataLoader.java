@@ -75,7 +75,7 @@ public class DataLoader implements CommandLineRunner {
 
         averageSpendingBatchJob.executeBatchJob();
 
-        customerBudgetService.createOrUpdateBudget(customerService.getCustomerByEmail("nicolocarrozza98@gmail.com").get(0).getEmail(), 64L, new BigDecimal(1));
+        customerBudgetService.createOrUpdateBudget(customerService.getCustomerByEmail("nicolocarrozza98@gmail.com").get(0).getEmail(), 64, new BigDecimal(1));
 
         budgetCheckService.checkBudgetsAndNotify();
     }

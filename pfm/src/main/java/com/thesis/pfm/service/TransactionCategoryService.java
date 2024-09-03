@@ -22,6 +22,13 @@ public class TransactionCategoryService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    public List<TransactionCategory> getAllCategories() {
+        return transactionCategoryRepository.findAll();
+    }
+    public TransactionCategory getCategoryById(Integer id) {
+        return transactionCategoryRepository.findById(id).orElse(null);
+    }
+
     private double calculateCategoryScore(Transaction transaction, TransactionCategory category) {
         double score = 0.0;
 
