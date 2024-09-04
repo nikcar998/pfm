@@ -62,13 +62,14 @@ public class DataLoader implements CommandLineRunner {
 
         Account account = accountRepository.findByCustomer_Email("nicolocarrozza98@gmail.com").get(0);
         Transaction transaction1 = transactionRepository.findByAccount_NumeroContoCorrente(account.getNumeroContoCorrente()).isEmpty() ?
-                transactionRepository.findByAccount_NumeroContoCorrente(account.getNumeroContoCorrente()).get(0) : null;
-        createData.addTransactionsWithDescription(account, null, null, (transaction1 == null));
+                 null :
+                transactionRepository.findByAccount_NumeroContoCorrente(account.getNumeroContoCorrente()).get(0);
+        createData.addTransactionsWithDescription(account, null, null, (transaction1 != null));
 
         Account account1 = accountRepository.findByCustomer_Email("nicolocarrozza98@gmail.com").get(1);
         Transaction transaction2 = transactionRepository.findByAccount_NumeroContoCorrente(account1.getNumeroContoCorrente()).isEmpty() ?
                                 null : transactionRepository.findByAccount_NumeroContoCorrente(account1.getNumeroContoCorrente()).get(0) ;
-        createData.addTransactionsWithDescription(account1, "telefono", null, (transaction2 == null));
+        createData.addTransactionsWithDescription(account1, "telefono", null, (transaction2 != null));
 
         transactionCategoryService.categorizeTransactions(transactionRepository.findAll());
 

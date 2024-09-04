@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -30,14 +32,20 @@ public class BudgetCheckService {
     public void checkBudgetsAndNotify() {
         List<CustomerBudget> customerBudgets = customerBudgetRepository.findAll();
 
+        // Calcola l'inizio e la fine del mese corrente
+        LocalDate startOfMonth = YearMonth.now().atDay(1);
+        LocalDate endOfMonth = YearMonth.now().atEndOfMonth();
+
         for (CustomerBudget customerBudget : customerBudgets) {
-            // Utilizza findTransactionsByCustomerAndCategory per ottenere tutte le transazioni rilevanti
-            List<Transaction> transactions = transactionRepository.findTransactionsByCustomerAndCategory(
+            // Utilizza il nuovo metodo del repository per ottenere solo le transazioni del mese corrente
+            List<Transaction> transactions = transactionRepository.findTransactionsByCustomerAndCategoryAndDateBetween(
                     customerBudget.getCustomerEmail(),
-                    customerBudget.getCategoryId()
+                    customerBudget.getCategoryId(),
+                    startOfMonth,
+                    endOfMonth
             );
 
-            // Calcola la somma delle transazioni
+            // Calcola la somma delle transazioni per il mese corrente
             BigDecimal totalSpent = transactions.stream()
                     .map(Transaction::getImporto)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -48,7 +56,7 @@ public class BudgetCheckService {
                         customerBudget.getCustomerEmail(),
                         "Spending Limit Exceeded",
                         String.format("You have exceeded your spending limit for the category '%s'. Total Spent: $%.2f. Limit: $%.2f",
-                                customerBudget.getCategory().getName(), totalSpent, customerBudget.getAmount())
+                                customerBudget.getCategoryId(), totalSpent, customerBudget.getAmount())
                 );
             }
         }

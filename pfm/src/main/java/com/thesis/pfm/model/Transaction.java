@@ -15,26 +15,18 @@ public class Transaction {
 
     private LocalDate dataPresaInCarico;
     private LocalDate dataEsecuzione;
-    private String numeroOrdine;
     private String ordinante;
-    private String filiale;
     private String beneficiario;
     private String indirizzo;
     private String localita;
     private String paese;
     private String iban;
-    private String bic;
-    private String debitoreEffettivo;
-    private String creditoreEffettivo;
-    private String identificativoBonifico;
     private String tipologia;
     private String bancaBeneficiario;
     private String descrizione;
 
     @Column(precision = 19, scale = 4)
     private BigDecimal importo;
-
-    private String TRN;
 
     @Column(precision = 19, scale = 4)
     private BigDecimal commissioni;
